@@ -48,7 +48,7 @@ app.layout = html.Div([
                     className="dropdown",
                     placeholder="select trace"
                 ),
-                dcc.RadioItems(
+                dcc.Checklist(
                     id='machine',
                     options=[
                         {'label': 'Machine A', 'value': 'A'},
@@ -80,15 +80,24 @@ app.layout = html.Div([
     [Input('parameter-picker', 'value'),
      Input('machine', 'value')]
 )
-def plot_run_chart(trace, machine):
-    if trace and machine:
+def plot_run_chart(trace, machines):
+    if trace and machines:
         df = pd.read_csv('data/testdata.csv', index_col=0)
-        df = df.loc[df.machine == machine].reset_index(drop=True)
+        data = []
+        for machine in machines:
+            df_machine = df.loc[df.machine == machine, :].reset_index(drop=True)
+            data.append(dict(
+                x=df_machine.loc[:, trace].index,
+                y=df_machine.loc[:, trace],
+                type='scatter',
+                mode='lines+markers',
+                name=machine
+            ))
 
         return dcc.Graph(
             figure={
-                'data': [dict(x=df.index, y=df[trace], type='scatter', mode='lines+markers')],
-                'layout': dict(title=f'{trace}  -  machine {machine}')
+                'data': data,
+                'layout': dict(title=f'{trace}  -  machine {machines}')
             },
             className="run-chart"
         )
