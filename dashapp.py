@@ -5,11 +5,11 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+import plotly.graph_objects as go
 
 df = pd.read_csv('data/testdata.csv', index_col=0)
 
-stylesheet = 'style.assets'
-app = dash.Dash(__name__, )
+app = dash.Dash(__name__)
 
 app.layout = html.Div([
 
@@ -69,41 +69,106 @@ app.layout = html.Div([
 
         html.Div(
             id="main-plot",
-            # className="run-chart"
+            # className="main-chart"
         ),
+
+        # html.Div(
+        #     id="main-hist"
+        # )
     ], className="main-area")
 ])
+
+
+# @app.callback(
+#     Output('main-plot', 'children'),
+#     [Input('parameter-picker', 'value'),
+#      Input('machine', 'value'),
+#      Input('date-picker', 'start_date'),
+#      Input('date-picker', 'end_date')]
+# )
+# def plot_run_chart(trace, machines, start_date, end_date):
+#     if trace and machines:
+#         df = pd.read_csv('data/testDataWithDateIndex.csv', index_col=0)
+#         if start_date:
+#             df = df[start_date:]
+#         if end_date:
+#             df = df[: end_date]
+#
+#         data = []
+#         for machine in machines:
+#             df_machine = df.loc[df.machine == machine, :]
+#             data.append(dict(
+#                 # x=df_machine.index,
+#                 y=df_machine.loc[:, trace],
+#                 type='histogram',
+#                 # mode='lines+markers',
+#                 name=machine
+#             ))
+#
+#         return dcc.Graph(
+#             figure={
+#                 'data': data,
+#             },
+#             className="main-hist"
+#         )
 
 
 @app.callback(
     Output('main-plot', 'children'),
     [Input('parameter-picker', 'value'),
-     Input('machine', 'value')]
+     Input('machine', 'value'),
+     Input('date-picker', 'start_date'),
+     Input('date-picker', 'end_date')]
 )
-def plot_run_chart(trace, machines):
+def plot_run_chart(trace, machines, start_date, end_date):
     if trace and machines:
-        df = pd.read_csv('data/testdata.csv', index_col=0)
-        data = []
+        df = pd.read_csv('data/testDataWithDateIndex.csv', index_col=0)
+        if start_date:
+            df = df[start_date:]
+        if end_date:
+            df = df[: end_date]
+
+        plot_data = []
+        hist_data = []
+        opac = 1 if len(machines) == 1 else 0.6
         for machine in machines:
-            df_machine = df.loc[df.machine == machine, :].reset_index(drop=True)
-            data.append(dict(
-                x=df_machine.loc[:, trace].index,
+            df_machine = df.loc[df.machine == machine, :]
+            plot_data.append(dict(
+                x=df_machine.index,
                 y=df_machine.loc[:, trace],
                 type='scatter',
                 mode='lines+markers',
                 name=machine
             ))
+            hist_data.append(dict(
+                y=df_machine.loc[:, trace],
+                type='histogram',
+                name=machine,
+                opacity=opac,
+                nbins=20
+            ))
 
-        return dcc.Graph(
-            figure={
-                'data': data,
-                'layout': dict(title=f'{trace}  -  machine {machines}')
-            },
-            className="run-chart"
+        return html.Div(
+            className="main-chart",
+            children=[
+                dcc.Graph(
+                    figure={
+                        'data': plot_data,
+                        'layout': dict(title=f'{trace} for machines {machines}')
+                    },
+                    className="run-chart"
+                ),
+
+                dcc.Graph(
+                    figure={
+                        'data': hist_data,
+                        'layout': dict(barmode='overlay')
+                    },
+                    className="main-hist"
+                )
+            ]
         )
 
-
-app.css.append_css({"external_url": "/assets/{}".format(stylesheet)})
 
 if __name__ == '__main__':
     app.run_server(debug=True)
