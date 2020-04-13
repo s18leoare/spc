@@ -63,6 +63,7 @@ app.layout = html.Div([
                     id='date-picker',
                     initial_visible_month=datetime.now(),
                     end_date=datetime.now(),
+                    display_format='DD-MMM-YYYY',
                     className="date-picker"
                 )
             ], className="chart-options"),
@@ -77,40 +78,6 @@ app.layout = html.Div([
         # )
     ], className="main-area")
 ])
-
-
-# @app.callback(
-#     Output('main-plot', 'children'),
-#     [Input('parameter-picker', 'value'),
-#      Input('machine', 'value'),
-#      Input('date-picker', 'start_date'),
-#      Input('date-picker', 'end_date')]
-# )
-# def plot_run_chart(trace, machines, start_date, end_date):
-#     if trace and machines:
-#         df = pd.read_csv('data/testDataWithDateIndex.csv', index_col=0)
-#         if start_date:
-#             df = df[start_date:]
-#         if end_date:
-#             df = df[: end_date]
-#
-#         data = []
-#         for machine in machines:
-#             df_machine = df.loc[df.machine == machine, :]
-#             data.append(dict(
-#                 # x=df_machine.index,
-#                 y=df_machine.loc[:, trace],
-#                 type='histogram',
-#                 # mode='lines+markers',
-#                 name=machine
-#             ))
-#
-#         return dcc.Graph(
-#             figure={
-#                 'data': data,
-#             },
-#             className="main-hist"
-#         )
 
 
 @app.callback(
