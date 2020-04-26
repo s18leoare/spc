@@ -1,0 +1,39 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
+}
+
+nav{
+    position: fixed;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0.5em 2em;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+}
+
+nav a{
+    color: #333;
+    text-decoration: none;
+    font-size: 1.2em;
+}
+
+.logo{
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.nav-options a{
+    margin-left: 2em;
+}
+
+.outer-container{
+    padding: 4em 2em;   
+}

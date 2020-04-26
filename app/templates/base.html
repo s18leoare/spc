@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="process control web app">
+    <link rel="stylesheet" href="../static/main.css">
+    {% if title %}
+        <title>{{ title }}</title>
+    {% else %}
+        <title>IPC</title>
+    {% endif %}
+    <!-- insert dash head -->
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <a href="/">Inteligent Process Control</a>
+        </div>
+        <div class="nav-options">
+            <a href="/template-dashboard">Dashboards</a>
+            <a href="#">Help</a>
+            <a href="#">Account</a>
+        </div>
+    </nav>
+    {% block content %}{% endblock %}
+    <!-- insert dash footer -->
+</body>
+</html>

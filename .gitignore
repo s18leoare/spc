@@ -1,0 +1,4 @@
+*.ipynb
+*scratch.py
+*.idea/
+*__pycache__*
